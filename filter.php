@@ -33,6 +33,52 @@ class filter_swedishchef extends moodle_text_filter {
             return $text;
         }
 
+        $patterns = array (
+                "/a\B/",
+                "/an/",
+                "/au/",
+                "/en\b/",
+                "/\Bew/",
+                "/\Bf/",
+                "/\Bi/",
+                "/\Bir/",
+                "/\bo/",
+                "/ow/",
+                "/ph/",
+                "/th\b/",
+                "/\Btion/",
+                "/\Bu/",
+                "/\bU/",
+                "/y\b/",
+                "/v/",
+                "/w/",
+                "/ooo/");
+        
+        $replacements = array (
+                "e",
+                "un",
+                "oo",
+                "ee",
+                "oo",
+                "ff",
+                "ee",
+                "ur",
+                "oo",
+                "oo",
+                "f",
+                "t",
+                "shun",
+                "oo",
+                "Oo",
+                "ai",
+                "f",
+                "v",
+                "oo");
+        
+        
+        $text = preg_replace($patterns, $replacements, $text );
+        
+        /*
         $text = preg_replace( "/a\B/", "e", $text );
         $text = preg_replace( "/an/", "un", $text );
         $text = preg_replace( "/au/", "oo", $text );
@@ -52,12 +98,29 @@ class filter_swedishchef extends moodle_text_filter {
         $text = preg_replace( "/v/", "f", $text );
         $text = preg_replace( "/w/", "v", $text );
         $text = preg_replace( "/ooo/", "oo", $text );
-
+        */
         
         if(strlen($text) > 20) {
             $text .= " Børk! Børk! Børk!";
         }
 
         return $text;
+    }
+    
+    /*
+     * Add the javascript to enable swedish chef language processing on this page.
+    *
+    * @param moodle_page $page The current page.
+    * @param context $context The current context.
+    */
+    public function setup($page, $context) {
+        // This only requires execution once per request.
+        static $jsinitialised = false;
+    
+        if (empty($jsinitialised)) {
+            $page->requires->yui_module('moodle-filter_swedishchef-loader', 'M.filter_swedishchefloader.configure');
+    
+            $jsinitialised = true;
+        }
     }
 }
